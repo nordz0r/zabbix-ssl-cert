@@ -38,13 +38,13 @@ case $f in
 end_date=`openssl s_client -servername $servername -host $host -port $port -showcerts $starttls -prexit </dev/null 2>/dev/null |
           sed -n '/BEGIN CERTIFICATE/,/END CERT/p' |
           openssl x509 -text 2>/dev/null |
-          sed -n 's/ *Not After : *//p'`
+          sed -n 's/ *Not After : *//p'` 2>/dev/null
 
 if [ -n "$end_date" ]
 then
     end_date_seconds=`date '+%s' --date "$end_date"`
     now_seconds=`date '+%s'`
-    echo "$(( ($end_date_seconds - $now_seconds) / 24 / 3600 ))"
+    echo "($end_date_seconds-$now_seconds)/24/3600" | bc
 fi
 ;;
 
